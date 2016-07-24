@@ -1,12 +1,12 @@
-apply plugin: 'com.android.application'
-
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: "maven-publish"
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "ru.maslov.sandbox"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -19,9 +19,34 @@ android {
     }
 }
 
+ext{
+    getArtifactId = {
+        return "sandbox"
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId "ru.maslov.sandbox"
+            artifactId project.getArtifactId()
+            version "snapshot"
+            artifact "build/outputs/aar/" + project.getArtifactId() + "-debug.aar"
+        }
+    }
+
+    repositories {
+        mavenLocal()
+    }
+}
+
+repositories {
+    mavenLocal()
+}
 dependencies {
     compile 'com.jakewharton:butterknife:7.0.+'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
 }
