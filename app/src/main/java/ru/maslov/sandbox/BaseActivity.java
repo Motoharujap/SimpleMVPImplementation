@@ -1,5 +1,8 @@
 package ru.maslov.sandbox;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -29,6 +32,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 
         NavigationView navigationView = (NavigationView) findViewById(getNavigationViewResId());
         navigationView.setNavigationItemSelectedListener(this);
+
+        showMainFragmentIfNull();
     }
 
     //in order to make drawer toggle work you should call super.onBackPressed()
@@ -41,8 +46,34 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         }
     }
 
+    protected void startFragmentTransaction(Fragment fragmentToShow, boolean rememberTran, boolean replacePrevFrag,
+                                            int fragmentContainerId){
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (replacePrevFrag) {
+            transaction.replace(fragmentContainerId, fragmentToShow);
+        } else {
+            transaction.add(fragmentContainerId, fragmentToShow);
+        }
+        if (rememberTran){
+            transaction.addToBackStack(null);
+        }
+        transaction.commit();
+    }
+
+    //instantiate and show the main fragment only if it is null and not shown already
+    protected void showMainFragmentIfNull(){
+        FragmentManager fragmentManager = getFragmentManager();
+        if (fragmentManager.findFragmentById(getMainFragmentResId()) == null) {
+            showMainFragment();
+        }
+    }
+
     protected abstract int getLayoutResId();
     protected abstract int getToolbarResId();
     protected abstract int getDrawerResId();
     protected abstract int getNavigationViewResId();
+    //Every activity should have it's main fragment which represents activity's main view
+    protected abstract void showMainFragment();
+    protected abstract int getMainFragmentResId();
 }

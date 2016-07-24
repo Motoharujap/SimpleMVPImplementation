@@ -1,6 +1,8 @@
 package ru.maslov.sandbox;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -48,6 +50,21 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
         mPresenter.bindView(this);
         Log.d(TAG, this.getClass().getSimpleName() + " onResume()");
         super.onResume();
+    }
+
+    protected void startFragmentTransaction(Fragment fragmentToShow, boolean rememberTran, boolean replacePrevFrag,
+                                            int fragmentContainerId){
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        if (replacePrevFrag) {
+            transaction.replace(fragmentContainerId, fragmentToShow);
+        } else {
+            transaction.add(fragmentContainerId, fragmentToShow);
+        }
+        if (rememberTran){
+            transaction.addToBackStack(null);
+        }
+        transaction.commit();
     }
 
     protected abstract T getPresenter();
