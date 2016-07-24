@@ -14,7 +14,10 @@ public abstract class BasePresenter<T extends IView>{
     protected IDataManager mDataManager;
     public BasePresenter() {
         try {
-            mDataManager = GlobalDataManager.getInstance().getDataManager(getDataManagerClass());
+            Class dataManagerClass = getDataManagerClass();
+            if (dataManagerClass != null) {
+                mDataManager = GlobalDataManager.getInstance().getDataManager(dataManagerClass);
+            }
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
