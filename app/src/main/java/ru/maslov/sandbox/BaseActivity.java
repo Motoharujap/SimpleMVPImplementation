@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
  */
 public abstract class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     protected DrawerLayout mDrawerLayout;
+    protected NavigationView mNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,15 +31,19 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         mDrawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(getNavigationViewResId());
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView = (NavigationView) findViewById(getNavigationViewResId());
+        mNavigationView.setNavigationItemSelectedListener(this);
 
-        showMainFragmentIfNull();
+        showMainFragment();
     }
 
     //in order to make drawer toggle work you should call super.onBackPressed()
     @Override
     public void onBackPressed() {
+        int size = mNavigationView.getMenu().size();
+        for (int i = 0; i < size; i++) {
+            mNavigationView.getMenu().getItem(i).setChecked(false);
+        }
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
@@ -49,6 +54,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     protected void startFragmentTransaction(Fragment fragmentToShow, boolean rememberTran, boolean replacePrevFrag,
                                             int fragmentContainerId){
         FragmentManager fragmentManager = getFragmentManager();
+        Fragment currentlyActiveFragment = fragmentManager.findFragmentById(fragmentContainerId);
+        if (currentlyActiveFragment != null && currentlyActiveFragment.getClass().equals(fragmentToShow.getClass())){
+            return;
+        }
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if (replacePrevFrag) {
             transaction.replace(fragmentContainerId, fragmentToShow);
@@ -59,14 +68,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
             transaction.addToBackStack(null);
         }
         transaction.commit();
-    }
-
-    //instantiate and show the main fragment only if it is null and not shown already
-    protected void showMainFragmentIfNull(){
-        FragmentManager fragmentManager = getFragmentManager();
-        if (fragmentManager.findFragmentById(getMainFragmentResId()) == null) {
-            showMainFragment();
-        }
     }
 
     protected abstract int getLayoutResId();
