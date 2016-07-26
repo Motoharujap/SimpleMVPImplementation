@@ -3,8 +3,12 @@ package ru.maslov.sandbox;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -68,6 +72,20 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
             transaction.addToBackStack(null);
         }
         transaction.commit();
+    }
+
+    public boolean checkPermissions(String permission, int permissionCode, int sdkVersion) {
+        if (Build.VERSION.SDK_INT >= sdkVersion) {
+            int permissionCheckWrite = ContextCompat.checkSelfPermission(this,
+                    permission);
+            if (permissionCheckWrite != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{permission},
+                        permissionCode);
+                return false;
+            }
+        }
+        return true;
     }
 
     protected abstract int getLayoutResId();
