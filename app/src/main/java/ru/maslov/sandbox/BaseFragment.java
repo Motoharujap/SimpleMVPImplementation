@@ -1,8 +1,10 @@
 package ru.maslov.sandbox;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
+import ru.maslov.sandbox.dataLayer.GlobalDataManager;
 
 /**
  * Created by Администратор on 19.06.2016.
@@ -65,6 +68,12 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
             transaction.addToBackStack(null);
         }
         transaction.commit();
+    }
+
+    protected void gotoActivity(Activity current, Class activityToGo){
+        mPresenter.onLeaveState();
+        Intent startActivityIntent = new Intent(current, activityToGo);
+        startActivity(startActivityIntent);
     }
 
     protected abstract T getPresenter();
