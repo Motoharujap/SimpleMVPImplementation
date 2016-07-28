@@ -16,7 +16,7 @@ import ru.maslov.sandbox.R;
 
 
 /**
- * Created by Администратор on 28.02.2016.
+ * Class is in development stage, use wisely and only with full understanding of what you're doing
  */
 public class Dialog extends DialogFragment {
 
@@ -38,6 +38,8 @@ public class Dialog extends DialogFragment {
     public static final String EDIT_TEXT_DEFAULT_TEXT = "default_text";
     public static final String CUSTOM_VIEW_RES_ID = "custom_view_id";
     public static final String CHECKED_ITEMS = "checked_items";
+    public static final String POSITIVE_BTN_TXT = "btn_ok_txt";
+    public static final String NEGATIVE_BUTTON_TXT = "negative_btn_txt";
 
     public static final int DIALOG_SINGLECHOICE = 100;
     public static final int DIALOG_MESSAGE = 101;
@@ -47,6 +49,7 @@ public class Dialog extends DialogFragment {
     public static final int DIALOG_CUSTOM_LIST = 105;
     public static final int DIALOG_VIOLATION_COMMENTS = 106;
     public static final int DIALOG_MULTICHOICE = 107;
+    public static final int DIALOG_CUSTOM_VIEW_WITH_RES_ID = 108;
 
     public void setEditTextClick(IEditTextClick mEditTextClick) {
         this.mEditTextClick = mEditTextClick;
@@ -94,13 +97,7 @@ public class Dialog extends DialogFragment {
     @Override
     public android.app.Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-        String title = getArguments().getString(CAPTION);
-        if (title != null) {
-            builder.setTitle(title);
-        }
-        if (getArguments().getString(MESSAGE) != null){
-            builder.setMessage(getArguments().getString(MESSAGE));
-        }
+        setFrequentlyUsedParams(builder, getArguments());
         switch(getArguments().getInt(TYPE)){
             case DIALOG_SINGLECHOICE:{
                 builder.setItems(getArguments().getCharSequenceArray(ITEMS), mItemClickListener);
@@ -116,8 +113,6 @@ public class Dialog extends DialogFragment {
                 break;
             }
             case DIALOG_CONFIRM:{
-                builder.setPositiveButton(getString(R.string.btn_ok), mPositiveButtonClickListener);
-                builder.setNegativeButton(getString(R.string.btn_cancel), mNegativeButtonClickListener);
                 builder.setIcon(getResources().getDrawable(R.drawable.ic_warning_black_48dp));
                 break;
             }
@@ -144,6 +139,12 @@ public class Dialog extends DialogFragment {
                         dialog.dismiss();
                     }
                 });
+                break;
+            }
+            case DIALOG_CUSTOM_VIEW_WITH_RES_ID:{
+                int resId = getArguments().getInt(CUSTOM_VIEW_RES_ID);
+                View customView = LayoutInflater.from(getActivity()).inflate(resId, null);
+                builder.setView(customView);
                 break;
             }
             case DIALOG_CUSTOM_LIST:{
@@ -184,5 +185,24 @@ public class Dialog extends DialogFragment {
             }
         }
         return builder.show();
+    }
+
+    private void setFrequentlyUsedParams(AlertDialog.Builder builder, Bundle args){
+        String title = getArguments().getString(CAPTION);
+        if (title != null) {
+            builder.setTitle(title);
+        }
+        if (getArguments().getString(MESSAGE) != null){
+            builder.setMessage(getArguments().getString(MESSAGE));
+        }
+
+        if (mPositiveButtonClickListener != null){
+            String positiveBtnTxt = args.getString(POSITIVE_BTN_TXT) != null ? args.getString(POSITIVE_BTN_TXT) : getString(R.string.btn_ok);
+            builder.setPositiveButton(positiveBtnTxt, mPositiveButtonClickListener);
+        }
+        if (mNegativeButtonClickListener != null){
+            String negativeBtnTxt = args.getString(NEGATIVE_BUTTON_TXT) != null ? args.getString(NEGATIVE_BUTTON_TXT) : getString(R.string.btn_cancel);
+            builder.setNegativeButton(negativeBtnTxt, mNegativeButtonClickListener);
+        }
     }
 }
