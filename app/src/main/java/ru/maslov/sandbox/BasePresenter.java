@@ -17,12 +17,11 @@ public abstract class BasePresenter<T extends IView>{
     protected WeakReference<T> mView;
     protected IDataManager mDataManager;
     public BasePresenter() {
-
+        initializeDataManager();
     }
 
     public void bindView(T view) {
         mView = new WeakReference<>(view);
-        initializeDataManager();
     }
 
     public void unbindView() {
@@ -36,7 +35,8 @@ public abstract class BasePresenter<T extends IView>{
         try {
             GlobalDataManager.getInstance().destroyDataBlock(getDataManagerClass());
         } catch (DatablockDoesNotExistException e) {
-            Log.e(TAG, "Datablock with name " + getDataManagerClass().getSimpleName() + " does not exist in global manager!");
+            String className = getDataManagerClass() == null ? BasePresenter.class.getSimpleName() : getDataManagerClass().getSimpleName();
+            Log.e(TAG, "Datablock with name " + className + " does not exist in global manager!");
             e.printStackTrace();
         }
     }

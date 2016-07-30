@@ -27,9 +27,7 @@ public abstract class BaseDialogFragment<T extends BasePresenter> extends Dialog
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mainView = inflater.inflate(getLayoutResId(), container, false);
-        ButterKnife.bind(this, mainView);
-        return mainView;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
     @Override
     public void onResume() {

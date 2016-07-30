@@ -67,7 +67,8 @@ public class GlobalDataManager {
 
     private void checkBlockNotNull(DataManagerBlock block, Class clazz) throws DatablockDoesNotExistException {
         if (block == null){
-            throw new DatablockDoesNotExistException("Requested datablock with name " + clazz.getSimpleName() + " was not found." +
+            String clazzName = clazz == null ? "NONAME" : clazz.getSimpleName();
+            throw new DatablockDoesNotExistException("Requested datablock with name " + clazzName + " was not found." +
                     "It was either not added or is destroyed.");
         }
     }
