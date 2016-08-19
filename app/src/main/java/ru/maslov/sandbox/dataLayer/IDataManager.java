@@ -5,4 +5,5 @@ package ru.maslov.sandbox.dataLayer;
  */
 public interface IDataManager {
     //NOTE: all classes that implement this interface should have public no-args constructor!
+    void onDestroy();
 }

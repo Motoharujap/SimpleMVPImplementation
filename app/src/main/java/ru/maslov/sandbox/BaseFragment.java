@@ -12,8 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.ButterKnife;
 import ru.maslov.sandbox.dataLayer.GlobalDataManager;
+import ru.maslov.sandbox.eventBus.LeaveStateEvent;
 
 /**
  * Created by Администратор on 19.06.2016.
@@ -71,7 +74,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     }
 
     protected void gotoActivity(Activity current, Class activityToGo){
-        mPresenter.onLeaveState();
+        EventBus.getDefault().post(new LeaveStateEvent());
         Intent startActivityIntent = new Intent(current, activityToGo);
         startActivity(startActivityIntent);
     }

@@ -1,6 +1,7 @@
 package ru.maslov.sandbox.dataLayer;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -61,8 +62,10 @@ public class GlobalDataManager {
      * @param clazz key to find the datablock to destroy
      */
     public void destroyDataBlock(Class clazz) throws DatablockDoesNotExistException {
+        Log.d(TAG, "Destroying datablock");
         DataManagerBlock block = dataManagerBlocks.remove(clazz);
         checkBlockNotNull(block, clazz);
+        block.getDataManager(clazz).onDestroy();
     }
 
     private void checkBlockNotNull(DataManagerBlock block, Class clazz) throws DatablockDoesNotExistException {

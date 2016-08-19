@@ -1,8 +1,10 @@
 package ru.maslov.sandbox;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +16,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import org.greenrobot.eventbus.EventBus;
+
+import ru.maslov.sandbox.eventBus.LeaveStateEvent;
 
 /**
  * Created by Администратор on 24.07.2016.
@@ -44,6 +50,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     //in order to make drawer toggle work you should call super.onBackPressed()
     @Override
     public void onBackPressed() {
+        //notify all presenters about leaving state so they can destroy datamanagers
+        EventBus.getDefault().post(new LeaveStateEvent());
+
         int size = mNavigationView.getMenu().size();
         for (int i = 0; i < size; i++) {
             mNavigationView.getMenu().getItem(i).setChecked(false);
@@ -53,6 +62,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         } else {
             super.onBackPressed();
         }
+    }
+
+    protected void gotoActivity(Activity current, Class activityToGo){
+        EventBus.getDefault().post(new LeaveStateEvent());
+        Intent startActivityIntent = new Intent(current, activityToGo);
+        startActivity(startActivityIntent);
     }
 
     protected void startFragmentTransaction(Fragment fragmentToShow, boolean rememberTran, boolean replacePrevFrag,
