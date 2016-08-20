@@ -27,7 +27,9 @@ public abstract class BaseDialogFragment<T extends BasePresenter> extends Dialog
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View mainView = inflater.inflate(getLayoutResId(), container, false);
+        ButterKnife.bind(this, mainView);
+        return mainView;
     }
     @Override
     public void onResume() {
@@ -38,6 +40,12 @@ public abstract class BaseDialogFragment<T extends BasePresenter> extends Dialog
     public void onPause() {
         mPresenter.unbindView();
         super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        ButterKnife.unbind(this);
+        super.onDestroyView();
     }
 
     protected abstract T getPresenter();

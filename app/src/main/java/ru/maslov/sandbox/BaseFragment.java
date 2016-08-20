@@ -41,6 +41,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     @Override
     public void onDestroyView() {
         Log.d(TAG, this.getClass().getSimpleName() + " onDestroyView()");
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 
@@ -74,8 +75,15 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     }
 
     protected void gotoActivity(Activity current, Class activityToGo){
+        gotoActivity(current, activityToGo, null);
+    }
+
+    protected void gotoActivity(Activity current, Class activityToGo, @Nullable Bundle extras){
         EventBus.getDefault().post(new LeaveStateEvent());
         Intent startActivityIntent = new Intent(current, activityToGo);
+        if (extras != null){
+            startActivityIntent.putExtras(extras);
+        }
         startActivity(startActivityIntent);
     }
 

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -65,8 +66,15 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     }
 
     protected void gotoActivity(Activity current, Class activityToGo){
+        gotoActivity(current, activityToGo, null);
+    }
+
+    protected void gotoActivity(Activity current, Class activityToGo, @Nullable Bundle extras){
         EventBus.getDefault().post(new LeaveStateEvent());
         Intent startActivityIntent = new Intent(current, activityToGo);
+        if (extras != null){
+            startActivityIntent.putExtras(extras);
+        }
         startActivity(startActivityIntent);
     }
 
