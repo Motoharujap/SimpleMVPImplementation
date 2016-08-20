@@ -41,13 +41,13 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     @Override
     public void onDestroyView() {
         Log.d(TAG, this.getClass().getSimpleName() + " onDestroyView()");
-        mPresenter.unbindView();
         super.onDestroyView();
     }
 
     @Override
     public void onPause() {
         Log.d(TAG, this.getClass().getSimpleName() + " onPause()");
+        mPresenter.unbindView();
         super.onPause();
     }
 

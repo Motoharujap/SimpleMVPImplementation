@@ -2,6 +2,7 @@ package ru.maslov.sandbox;
 
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.ref.WeakReference;
@@ -25,9 +26,11 @@ public abstract class BasePresenter<T extends IView>{
 
     public void bindView(T view) {
         mView = new WeakReference<>(view);
+        EventBus.getDefault().register(this);
     }
 
     public void unbindView() {
+        EventBus.getDefault().unregister(this);
         mView.clear();
     }
 
