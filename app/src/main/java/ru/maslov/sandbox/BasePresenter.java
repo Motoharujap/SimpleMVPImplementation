@@ -21,12 +21,12 @@ public abstract class BasePresenter<T extends IView>{
     protected WeakReference<T> mView;
     protected IDataManager mDataManager;
     public BasePresenter() {
-        initializeDataManager();
     }
 
     public void bindView(T view) {
         mView = new WeakReference<>(view);
         EventBus.getDefault().register(this);
+        initializeDataManager();
     }
 
     public void unbindView() {
@@ -38,7 +38,9 @@ public abstract class BasePresenter<T extends IView>{
 
     @Subscribe
     public void onLeaveStateEvent(LeaveStateEvent event){
-        onLeaveState();
+        if (this.getClass().getSimpleName().equals(event.className)) {
+            onLeaveState();
+        }
     }
 
     protected void onLeaveState(){
@@ -49,6 +51,10 @@ public abstract class BasePresenter<T extends IView>{
             Log.e(TAG, "Datablock with name " + className + " does not exist in global manager!");
             e.printStackTrace();
         }
+    }
+
+    public void onCreateView(){
+       initializeDataManager();
     }
 
     private void initializeDataManager(){
@@ -66,5 +72,17 @@ public abstract class BasePresenter<T extends IView>{
         } catch (InstantiationException e) {
             e.printStackTrace();
         }
+    }
+
+    protected IView view(){
+        if (mView.get() == null){
+            return new IView() {
+                @Override
+                public String getString(int resId) {
+                    return "";
+                }
+            };
+        }
+        return mView.get();
     }
 }

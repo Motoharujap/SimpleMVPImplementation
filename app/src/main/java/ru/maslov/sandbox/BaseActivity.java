@@ -51,9 +51,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     //in order to make drawer toggle work you should call super.onBackPressed()
     @Override
     public void onBackPressed() {
-        //notify all presenters about leaving state so they can destroy datamanagers
-        EventBus.getDefault().post(new LeaveStateEvent());
-
         int size = mNavigationView.getMenu().size();
         for (int i = 0; i < size; i++) {
             mNavigationView.getMenu().getItem(i).setChecked(false);
@@ -70,7 +67,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     }
 
     protected void gotoActivity(Activity current, Class activityToGo, @Nullable Bundle extras){
-        EventBus.getDefault().post(new LeaveStateEvent());
+        EventBus.getDefault().post(new LeaveStateEvent(null));
         Intent startActivityIntent = new Intent(current, activityToGo);
         if (extras != null){
             startActivityIntent.putExtras(extras);

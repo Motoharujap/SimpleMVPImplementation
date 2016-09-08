@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -35,6 +37,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
         if (mPresenter == null) {
             mPresenter = getPresenter();
         }
+        mPresenter.onCreateView();
         return mainView;
     }
 
@@ -79,13 +82,14 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     }
 
     protected void gotoActivity(Activity current, Class activityToGo, @Nullable Bundle extras){
-        EventBus.getDefault().post(new LeaveStateEvent());
+        EventBus.getDefault().post(new LeaveStateEvent(mPresenter.getClass().getSimpleName()));
         Intent startActivityIntent = new Intent(current, activityToGo);
         if (extras != null){
             startActivityIntent.putExtras(extras);
         }
         startActivity(startActivityIntent);
     }
+
 
     protected abstract T getPresenter();
 

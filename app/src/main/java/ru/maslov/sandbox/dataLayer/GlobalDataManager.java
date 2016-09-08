@@ -62,7 +62,7 @@ public class GlobalDataManager {
      * @param clazz key to find the datablock to destroy
      */
     public void destroyDataBlock(Class clazz) throws DatablockDoesNotExistException {
-        Log.d(TAG, "Destroying datablock");
+        Log.d(TAG, "Destroying datablock" + (clazz != null ? clazz.getSimpleName() : ""));
         DataManagerBlock block = dataManagerBlocks.remove(clazz);
         checkBlockNotNull(block, clazz);
         block.getDataManager(clazz).onDestroy();
