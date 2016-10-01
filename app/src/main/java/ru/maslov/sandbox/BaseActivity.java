@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 
 import org.greenrobot.eventbus.EventBus;
 
+import butterknife.ButterKnife;
 import ru.maslov.sandbox.eventBus.LeaveStateEvent;
 
 /**
@@ -32,6 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResId());
+        ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(getToolbarResId());
         setSupportActionBar(toolbar);
 
@@ -60,6 +62,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        ButterKnife.unbind(this);
+        super.onDestroy();
     }
 
     protected void gotoActivity(Activity current, Class activityToGo){

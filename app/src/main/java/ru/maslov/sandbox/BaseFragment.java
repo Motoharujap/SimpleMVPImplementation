@@ -31,7 +31,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, this.getClass().getSimpleName() + " onCreateView()");
-        setRetainInstance(true);
+        /*setRetainInstance(true);*/
         View mainView = inflater.inflate(getLayoutResId(), container, false);
         ButterKnife.bind(this, mainView);
         if (mPresenter == null) {
@@ -64,7 +64,7 @@ public abstract class BaseFragment<T extends BasePresenter> extends Fragment imp
 
     protected void startFragmentTransaction(Fragment fragmentToShow, boolean rememberTran, boolean replacePrevFrag,
                                             int fragmentContainerId){
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         if (replacePrevFrag) {
             transaction.replace(fragmentContainerId, fragmentToShow);

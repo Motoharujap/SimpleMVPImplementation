@@ -49,7 +49,6 @@ public abstract class BasePresenter<T extends IView>{
         } catch (DatablockDoesNotExistException e) {
             String className = getDataManagerClass() == null ? BasePresenter.class.getSimpleName() : getDataManagerClass().getSimpleName();
             Log.e(TAG, "Datablock with name " + className + " does not exist in global manager!");
-            e.printStackTrace();
         }
     }
 
